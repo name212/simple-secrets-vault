@@ -51,7 +51,7 @@
           </component>
         </children>
       </grid>
-      <grid id="427cb" binding="yandex" custom-create="true" layout-manager="GridBagLayout">
+      <grid id="427cb" binding="yandex" layout-manager="GridBagLayout">
         <constraints>
           <card name="Load from Yandex.Drive..."/>
         </constraints>

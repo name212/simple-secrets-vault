@@ -2,6 +2,7 @@ package db
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object DbConstants {
     const val LABEL_LEN = 32
@@ -39,4 +40,11 @@ object LabeledSecret: Table("secret_labeled") {
     val label: Column<String> = reference("label", Label.name, ReferenceOption.CASCADE, ReferenceOption.CASCADE);
 
     override val primaryKey = PrimaryKey(secretId, label)
+}
+
+fun connect(path: String) {
+    val c = Database.connect("jdbc:sqlite:${path}", "org.sqlite.JDBC")
+    transaction {
+        commit()
+    }
 }
