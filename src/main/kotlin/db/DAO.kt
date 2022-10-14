@@ -2,6 +2,7 @@ package db
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DbConstants {
@@ -42,9 +43,13 @@ object LabeledSecret: Table("secret_labeled") {
     override val primaryKey = PrimaryKey(secretId, label)
 }
 
-fun connect(path: String) {
+fun connect(path: String): Database {
     val c = Database.connect("jdbc:sqlite:${path}", "org.sqlite.JDBC")
     transaction {
+        SchemaUtils.create(Label, Secret, File, LabeledSecret)
         commit()
     }
+
+    TransactionManager.defaultDatabase = c
+    return c
 }
