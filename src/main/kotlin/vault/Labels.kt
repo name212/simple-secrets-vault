@@ -6,18 +6,20 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.lang.Exception
 class Labels () {
     fun add(n: String, d: String = "", c: String = "#000000") : Boolean {
+        return transaction {
             val res = Label.insert {
                 it[name] = n
                 it[description] = d
                 it[color] = c
             }
 
-            return res.insertedCount == 1
+            res.insertedCount == 1
+        }
 
     }
     fun edit(name: String, description: String, color: String) : Boolean {
-        var ret = false
-        transaction {
+        return transaction {
+            var updated = false
             val q = Label.select{Label.name eq name}
             if (q.count() == 1L){
                 val res = Label.update {
@@ -25,25 +27,25 @@ class Labels () {
                     it[Label.color] = color
                 }
 
-                if (res == 1){
+                updated = res == 1
+
+                if (updated){
                     commit()
-                    ret = true
                 }
             }
+            updated
         }
 
-        return ret
     }
     fun remove(names: List<String>): Boolean {
-        var ret = false
-        transaction {
+        return transaction {
+            var ret = false
             val res = Label.deleteWhere { Label.name inList names }
-            if (res == names.size){
+            ret = res == names.size
+            if (ret){
                 commit()
-                ret = true
             }
+            ret
         }
-
-        return ret
     }
 }
