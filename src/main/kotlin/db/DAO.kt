@@ -21,6 +21,7 @@ object Secret: Table("secret") {
     val id: Column<Int> = integer("id").autoIncrement();
     val name: Column<String> = varchar("name", 64);
     val value: Column<String?> = varchar("value", 512).nullable();
+    val valueLen: Column<Int> = integer("value_len");
     val created: Column<String> = varchar("created", 24);
     val updated: Column<String?> = varchar("updated", 24).nullable();
 
@@ -31,6 +32,7 @@ object File: Table("secret_file") {
     val secretId = reference("secret_id", Secret.id, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
     val name: Column<String> = varchar("name", 256);
     val content: Column<ExposedBlob> = blob("content");
+    val contentLen: Column<Int> = integer("content_len");
     val mime: Column<String?> = varchar("mime", 64).nullable();
 
     override val primaryKey = PrimaryKey(secretId, name)
